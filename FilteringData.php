@@ -56,5 +56,4 @@ class FilteringData {
         return $totalPriceResult['total_price'];
     }
 
-
 }
