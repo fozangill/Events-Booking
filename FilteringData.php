@@ -37,5 +37,24 @@ class FilteringData {
     }
 
 
+    public function getTotalPrice($employeeNameFilter, $eventIDFilter, $eventDateFilter)
+    {
+        $employeeNameFilter = '%' . $employeeNameFilter . '%';
+        $eventIDFilter = '%' . $eventIDFilter . '%';
+        $eventDateFilter = '%' . $eventDateFilter . '%';
+
+        $query = "SELECT SUM(participation_fee) AS total_price
+                  FROM participations
+                  INNER JOIN employees ON participations.employee_mail = employees.employee_mail
+                  INNER JOIN events ON participations.event_id = events.event_id
+                  WHERE employees.employee_name LIKE '$employeeNameFilter'
+                    AND events.event_name LIKE '$eventIDFilter'
+                    AND events.event_date LIKE '$eventDateFilter'";
+
+        $result = $this->connection->query($query);
+        $totalPriceResult = $result->fetch_assoc();
+        return $totalPriceResult['total_price'];
+    }
+
 
 }
