@@ -38,6 +38,9 @@ $eventDateFilter = isset($_GET['event_date']) ? $_GET['event_date'] : '';
 // Getting filtered results
 $filteredData = $dataFilter->getFilteredResults($employeeNameFilter, $eventIDFilter, $eventDateFilter);
 
+// function call to calculate total price of filtered results
+$totalPrice = $dataFilter->getTotalPrice($employeeNameFilter, $eventIDFilter, $eventDateFilter);
+
 // Closing the connection
 $dbConnection->getConnection()->close();
 ?>
@@ -100,6 +103,7 @@ $dbConnection->getConnection()->close();
         <?php endforeach; ?>
     </table>
 
+<p>Total Price of Filtered Participation Fee: <?= htmlspecialchars($totalPrice) ?></p>
 
 </body>
 </html>
