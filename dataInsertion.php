@@ -54,5 +54,45 @@ class DataInsertion {
         }
     }
 
+    private function insertEvents($dataArray) {
+        $events = [];
+        $existingIDs = array();
+        foreach ($dataArray as $data) {
+
+        	$eventId = $this->connection->real_escape_string($data['event_id']);
+
+        	if(!in_array($eventId, $existingIDs)) {
+        		$existingIDs[] = $eventId;
+
+            $eventName = $this->connection->real_escape_string($data['event_name']);
+            $eventDate = $this->connection->real_escape_string($data['event_date']);
+
+            $events[$eventId] = [
+            	'event_id' => $eventId,
+                'event_name' => $eventName,
+                'event_date' => $eventDate,
+
+            ];
+
+
+        }
+    }
+
+        $values = [];
+
+        foreach ($events as $event) {
+
+            $values[] = "('{$event['event_id']}', '{$event['event_name']}', '{$event['event_date']}')";
+        }
+
+        $sql = "INSERT IGNORE INTO $this->eventsTable (event_id, event_name, event_date) VALUES " . implode(', ', $values);
+
+        if (!$this->connection->query($sql)) {
+            echo "Error: " . $sql . "<br>" . $this->connection->error;
+        }
+    }
+
+
+
 
 }
