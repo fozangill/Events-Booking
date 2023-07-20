@@ -92,7 +92,32 @@ class DataInsertion {
         }
     }
 
+    private function insertParticipations($dataArray) {
+        $participations = [];
 
+        foreach ($dataArray as $data) {
+            $participationId = $this->connection->real_escape_string($data['participation_id']);
+            $employeeMail = $this->connection->real_escape_string($data['employee_mail']);
+            $eventId = $this->connection->real_escape_string($data['event_id']);
+            $participationFee = $this->connection->real_escape_string($data['participation_fee']);
 
+            if(!empty($data['version']))
+            {
+            	$version = $this->connection->real_escape_string($data['version']);
+            }
 
+            else {
+            	$version = 'NULL';
+
+            }
+
+            $participations[] = "('$participationId', '$employeeMail', '$eventId', '$participationFee', '$version')";
+        }
+
+        $sql = "INSERT IGNORE INTO $this->participationsTable (participation_id, employee_mail, event_id, participation_fee, version) VALUES " . implode(', ', $participations);
+
+        if (!$this->connection->query($sql)) {
+            echo "Error: " . $sql . "<br>" . $this->connection->error;
+        }
+    }
 }
