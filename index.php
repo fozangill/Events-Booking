@@ -2,7 +2,7 @@
 
 require_once 'dbConnection.php';
 require_once 'dataInsertion.php';
-
+require_once 'FilteringData.php';
 
 // DB configuration
 $servername = "localhost";
@@ -28,13 +28,15 @@ $dataInsertion = new DataInsertion($dbConnection->getConnection(), $employeesTab
 
 $dataInsertion->insertData($dataArray);
 
-
+$dataFilter = new FilteringData($dbConnection->getConnection());
 
 // Getting the input filter values
 $employeeNameFilter = isset($_GET['employee_name']) ? $_GET['employee_name'] : '';
 $eventIDFilter = isset($_GET['event_name']) ? $_GET['event_name'] : '';
 $eventDateFilter = isset($_GET['event_date']) ? $_GET['event_date'] : '';
 
+// Getting filtered results
+$filteredData = $dataFilter->getFilteredResults($employeeNameFilter, $eventIDFilter, $eventDateFilter);
 
 // Closing the connection
 $dbConnection->getConnection()->close();
@@ -84,9 +86,19 @@ $dbConnection->getConnection()->close();
             <th>Event Date</th>
             <th>Version</th>
         </tr>
-
+        <?php foreach ($filteredData as $data): ?>
+            <tr>
+                <td><?php htmlspecialchars($data['participation_id']) ?></td>
+                <td><?php htmlspecialchars($data['employee_name']) ?></td>
+                <td><?php htmlspecialchars($data['employee_mail']) ?></td>
+                <td><?php htmlspecialchars($data['event_id']) ?></td>
+                <td><?php htmlspecialchars($data['event_name']) ?></td>
+                <td><?php htmlspecialchars($data['participation_fee']) ?></td>
+                <td><?php htmlspecialchars($data['event_date']) ?></td>
+                <td><?php htmlspecialchars($data['version']) ?></td>
+            </tr>
+        <?php endforeach; ?>
     </table>
-
 
 
 </body>
